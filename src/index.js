@@ -1,7 +1,11 @@
+  console.log('gaming')
+
+
 import { initializeApp } from 'firebase/app'
 import {
     getFirestore, collection, getDocs, onSnapshotsInSync
 } from 'firebase/firestore'
+
 
 const firebaseConfig = {
     apiKey: "AIzaSyAGOlbdFxHgMCRZO7yMBLykUkb3niZIgZQ",
@@ -16,19 +20,33 @@ initializeApp(firebaseConfig)
 
 const db = getFirestore()
 
-const colRef = collection(db, 'daxoppg')
+const colRef = collection(db, 'Users')
 
 getDocs(colRef)
   .then((snapshot) => {
-    let daxoppg = []
+    let Users = []
     snapshot.docs.forEach((doc) => {
-        daxoppg.push({ ...doc.data(), id: doc.id })
+        Users.push({ ...doc.data(), id: doc.id })
     })
-    console.log(daxoppg)
+    console.log(Users)
   })
   .catch(err => {
     console.log(err.message)
   })
 
-
-
+  const loginForm = document.querySelector('.login')
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault()
+      getDocs(colRef).then((snapshot) => {
+        let users = []
+        snapshot.docs.forEach((doc) => {
+          users.push({ ...doc.data(), id: doc.id })
+        })
+        users.forEach((item) => {
+          if (item.username == loginForm.username.value && item.password === loginForm.password.value) {
+            console.log('succes');
+            formWrapper.classList.add('d-none');
+          }
+        })
+      })
+  })
